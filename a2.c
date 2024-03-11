@@ -94,7 +94,7 @@ void deletePList(ProcessNode *head) {
 }
 
 void printFDList(FDNode *head, bool perProcess, bool systemWide, bool Vnodes, bool composite, bool sawPID, pid_t targetPID, FILE *out) {
-	if (sawPID) printf("Target PID: %d\n\n", targetPID);
+	if (sawPID) fprintf(out, "Target PID: %d\n\n", targetPID);
 	
 	if (perProcess) {
 		printf("\t PID\tFD\n");
@@ -354,7 +354,7 @@ int main(int argc, char **argv) {
 			exit(1);
 		}
 		
-		printFDList(fdHead, false, false, false, true, false, 0, txtOut);
+		printFDList(fdHead, false, false, false, true, sawPID, targetPID, txtOut);
 		
 		if (fclose(txtOut) != 0) {
 			fprintf(stderr, "err: compositeTable.txt could not be closed\n");
@@ -371,6 +371,11 @@ int main(int argc, char **argv) {
 		
 		FDNode *tr = fdHead;
 		while (tr != NULL) {
+			if (sawPID && targetPID != tr->pid) {
+				tr = tr->next;
+				continue;
+			}
+			
 			FDData new;
 			new.pid = tr->pid;
 			new.fd = tr->fd;
