@@ -39,7 +39,7 @@ typedef struct processNode {
 FDNode *newFDNode(pid_t pid, int fd, char *filename, ino_t inode) {
 	FDNode *new = malloc(sizeof(FDNode));
 	if (new == NULL) {
-		fprintf(stderr, "Error allocating memory for FDNode\n");
+		fprintf(stderr, "err: Error allocating memory for FDNode\n");
 		exit(1);
 	}
 	new->pid = pid;
@@ -52,7 +52,7 @@ FDNode *newFDNode(pid_t pid, int fd, char *filename, ino_t inode) {
 ProcessNode *newPNode(pid_t pid, int fdCount) {
 	ProcessNode *new = malloc(sizeof(ProcessNode));
 	if (new == NULL) {
-		fprintf(stderr, "Error allocating memory for ProcessNode\n");
+		fprintf(stderr, "err: Error allocating memory for ProcessNode\n");
 		exit(1);
 	}
 	new->pid = pid;
@@ -303,7 +303,6 @@ int main(int argc, char **argv) {
 			
 			if ((len = readlink(fdLink, filename, sizeof(filename) - 1)) != -1) filename[len] = '\0';
 			else {
-				printf("fd entry = %s\n", procFDEntry->d_name);
 				fprintf(stderr, "err: Could not read link: %s\n", fdLink);
 				exit(1);
 			}
